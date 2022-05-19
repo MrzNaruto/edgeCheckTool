@@ -11,6 +11,9 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.swing.*;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
@@ -32,6 +35,11 @@ class Windowm extends JFrame
     JTextPane text1=new JTextPane();
     JTextPane text2=new JTextPane();
     
+	JLabel lblNewLabel = new JLabel("请选择Edge版本");	
+	JComboBox<String> comboBox1 = new JComboBox<>();
+	JLabel lblNewLabel_1 = new JLabel("请选择文件");
+	
+	JButton btnNewButton = new JButton("打开文件");
     JButton bt1 = new JButton("打开文档1");
     JButton bt2 = new JButton("打开文档2");
     JButton bt3 = new JButton("核对");
@@ -52,15 +60,23 @@ class Windowm extends JFrame
     
     public Windowm()
     {
-    	setVisible(true);
     	jm.add(copy);
         jm.add(path);
         jm.add(cut);
         jm.add(help);
         jm.add(about);
-         
-        myPanel3.add(bt1);
-        myPanel3.add(bt2);
+        comboBox1.addItem("95");
+        comboBox1.addItem("96");
+        comboBox1.addItem("97");
+        comboBox1.addItem("98");
+        comboBox1.addItem("99");
+        comboBox1.addItem("100");
+        comboBox1.addItem("101");
+        comboBox1.addItem("102");
+        myPanel3.add(lblNewLabel);
+        myPanel3.add(comboBox1);
+        myPanel3.add(lblNewLabel_1);
+        myPanel3.add(btnNewButton);
         myPanel4.add(bt3);
          
     	this.setTitle("欢迎使用文本比较软件");
@@ -179,7 +195,7 @@ class Windowm extends JFrame
            }  
        }); 
        
-	bt1.addActionListener(new ActionListener()//窗口监听
+      btnNewButton.addActionListener(new ActionListener()//窗口监听
 		{
 			public void actionPerformed(ActionEvent e4)//菜单项
 			{
@@ -195,7 +211,12 @@ class Windowm extends JFrame
 				    SimpleAttributeSet attrset = new SimpleAttributeSet();
 				    StyleConstants.setFontSize(attrset,16);//设置字号
 			        Document docs=text1.getDocument();
-			        docs.insertString(docs.getLength(), File1, attrset);
+			        String regEx_style = "<style[^>]*?>[\\s\\S]*?<\\/style>";
+			        Pattern p_style = Pattern.compile(regEx_style, Pattern.CASE_INSENSITIVE);
+			        Matcher m_style = p_style.matcher(File1);
+			        File2=m_style.group();
+			        System.out.println(File2);
+			        docs.insertString(docs.getLength(), File2, attrset);
 				}catch(Exception e1){
 				}
 			}
@@ -275,7 +296,8 @@ class Windowm extends JFrame
 				}
 			}
 		}
-	);     
+	);  
+	setVisible(true);
     }
 }
 

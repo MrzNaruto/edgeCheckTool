@@ -14,7 +14,6 @@ public class Star
     	//初始化界面
         Windowm windowm = new Windowm();
         
-        
         //属性设置
         SimpleAttributeSet attrset = new SimpleAttributeSet();
         //字体大小
