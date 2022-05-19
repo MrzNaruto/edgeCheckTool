@@ -136,6 +136,15 @@ class Windowm extends JFrame
     			}
    			}
     	);
+        comboBox1.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String version=(String)comboBox1.getSelectedItem();
+				System.out.println(version);
+			}
+        	
+        });
         cut.addActionListener(new ActionListener()//窗口监听
     		{
     			public void actionPerformed(ActionEvent e4)//菜单项
@@ -214,9 +223,13 @@ class Windowm extends JFrame
 			        String regEx_style = "<style[^>]*?>[\\s\\S]*?<\\/style>";
 			        Pattern p_style = Pattern.compile(regEx_style, Pattern.CASE_INSENSITIVE);
 			        Matcher m_style = p_style.matcher(File1);
-			        File2=m_style.group();
-			        System.out.println(File2);
-			        docs.insertString(docs.getLength(), File2, attrset);
+			        docs.insertString(docs.getLength(), File1, attrset);
+			        String cssContent = "";
+			        if(m_style.find()) {
+			        	cssContent = m_style.group();
+			        }
+			        String version=(String)comboBox1.getSelectedItem();
+			        System.out.println(version);
 				}catch(Exception e1){
 				}
 			}

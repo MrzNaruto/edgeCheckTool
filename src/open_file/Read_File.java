@@ -20,6 +20,7 @@ public class Read_File {
 			String line = null;
 			while((line = br.readLine()) != null) {
 				sb.append(line);
+				sb.append("\r\n");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
