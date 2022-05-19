@@ -18,9 +18,12 @@ public class Read_File {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),"utf-8")); //这里可以控制编码
 			sb = new StringBuffer();
 			String line = null;
+			int count=1;
 			while((line = br.readLine()) != null) {
+				sb.append(String.valueOf(count)+"  ");
 				sb.append(line);
 				sb.append("\r\n");
+				count++;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
