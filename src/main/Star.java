@@ -21,8 +21,8 @@ public class Star
         //获取JTextPane对象
         Document docs1=windowm.text1.getDocument();
         //设置初次显示文本
-        docs1.insertString(docs1.getLength(), "手动输入或者选择文件打开", attrset);        
+        docs1.insertString(docs1.getLength(), "选择待兼容的Edge浏览器版本,并上传需检测的文件,上传成功后,该区域将展示文件内容", attrset);        
         Document docs2=windowm.text2.getDocument();
-        docs2.insertString(docs2.getLength(), "手动输入输入或者选择文间打开\n点击核对试试\n红色表示错误字符\n蓝色表示多余或缺失字符", attrset);
+        docs2.insertString(docs2.getLength(), "点击核对按钮将进行兼容性检测\n检测结果中红色表示该语法不兼容\n蓝色表示部分兼容\n该区域将展示比对后的文件内容", attrset);
     }
 }

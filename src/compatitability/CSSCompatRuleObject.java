@@ -1,5 +1,6 @@
 package compatitability;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -138,7 +139,7 @@ public enum CSSCompatRuleObject {
         }
 
         private boolean isContain(String versioNum){
-            if(versioNum.compareToIgnoreCase(min)>=0 && versioNum.compareToIgnoreCase(max)<=0) {
+            if(new BigDecimal(versioNum).compareTo(new BigDecimal(min))>=0 && new BigDecimal(versioNum).compareTo(new BigDecimal(max))<=0) {
                 return true;
             }else return false;
         }

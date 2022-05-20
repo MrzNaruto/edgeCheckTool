@@ -1,7 +1,9 @@
 package main;
 
-import algorithm.DNASequence;
 import algorithm.GetAttri;
+import compatitability.CSSCompatRuleObject;
+import enums.EnumCode;
+import exception.ToolException;
 import open_file.Read_File;
 
 import java.awt.*;
@@ -12,7 +14,10 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,9 +29,7 @@ import javax.swing.text.StyleConstants;
 class Windowm extends JFrame
 {
 	String path1;//第一个文件目录
-	String path2;//第二个文件目录
 	String File1;//第一个文件
-	String File2;//第二个文件
 	int point;//保存当前活动窗口
 	
 	private static final long serialVersionUID = 1L;
@@ -43,7 +46,6 @@ class Windowm extends JFrame
 	
 	JButton btnNewButton = new JButton("打开文件");
     JButton bt1 = new JButton("打开文档1");
-    JButton bt2 = new JButton("打开文档2");
     JButton bt3 = new JButton("核对");
    
     JPopupMenu jm = new JPopupMenu();//右键菜单
@@ -60,6 +62,10 @@ class Windowm extends JFrame
     JSplitPane jSplitPane2 =new JSplitPane();//设定为拆分布局
     JSplitPane jSplitPane3 =new JSplitPane();//设定为拆分布局
     
+    
+    Set<String> set;//截取出来的css属性
+    String cssContent ="";//截取出来的css内容
+    String version="";//版本
     public Windowm()
     {
     	jm.add(copy);
@@ -142,8 +148,8 @@ class Windowm extends JFrame
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String version=(String)comboBox1.getSelectedItem();
-				System.out.println(version);
+				version=(String)comboBox1.getSelectedItem();
+				//System.out.println(version);
 			}
         	
         });
@@ -163,7 +169,7 @@ class Windowm extends JFrame
     		{
     			public void actionPerformed(ActionEvent e4)//菜单项
     			{
-    				JOptionPane.showMessageDialog(null,"使用方法：输入或者点击打开两个文本，按核对键进行比较\n红色表示匹配失败，蓝色表示多余，黑色为正常匹配文本","使用指南",JOptionPane.PLAIN_MESSAGE); 			
+    				JOptionPane.showMessageDialog(null,"使用方法：输入待检测的文件进行检测\n红色表示匹配失败，蓝色表示多余，黑色为正常匹配文本","使用指南",JOptionPane.PLAIN_MESSAGE); 			
     			}
     		}
     	);
@@ -171,7 +177,7 @@ class Windowm extends JFrame
     		{
     			public void actionPerformed(ActionEvent e4)//菜单项
     			{
-    				JOptionPane.showMessageDialog(null,"原创：将军\nQQ 2910001378@qq.com \n人生苦短，欢迎转载","将军原创",JOptionPane.PLAIN_MESSAGE); 			
+    				JOptionPane.showMessageDialog(null,"前端语法兼容Edge浏览器检测工具\nVersion 1.1 \n","欢迎使用",JOptionPane.PLAIN_MESSAGE); 			
     			}
     		}
     	);
@@ -226,40 +232,19 @@ class Windowm extends JFrame
 			        Pattern p_style = Pattern.compile(regEx_style, Pattern.CASE_INSENSITIVE);
 			        Matcher m_style = p_style.matcher(File1);
 			        docs.insertString(docs.getLength(), File1, attrset);
-			        String cssContent = "";
+			        cssContent = "";
 			        if(m_style.find()) {
 			        	cssContent = m_style.group();
 			        }
-			        Set<String> s=GetAttri.getAttri(cssContent);
-	                for(String s1: s){
-	                    System.out.println(s1);
-	                 }
-			        String version=(String)comboBox1.getSelectedItem();
+			        set=GetAttri.getAttri(cssContent);
+//	                for(String s1: set){
+//	                    System.out.println(s1);
+//	                 }
+			        //String version=(String)comboBox1.getSelectedItem();
+			        version=(String)comboBox1.getSelectedItem();
 			        System.out.println(version);
 				}catch(Exception e1){
-				}
-			}
-		}
-	);
-	bt2.addActionListener(new ActionListener()//窗口监听
-		{
-			public void actionPerformed(ActionEvent e4)//菜单项
-			{
-				try{	
-					text2.setText("");
-				    JFileChooser jfc=new JFileChooser();
-				    jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );
-				    jfc.showDialog(new JLabel(), "选择");
-				    File file=jfc.getSelectedFile();
-				    path2=file.getAbsolutePath();//获取文件绝对地址		
-				    new Read_File(path2);
-					File2= Read_File.getFile();
-					SimpleAttributeSet attrset = new SimpleAttributeSet();
-					StyleConstants.setFontSize(attrset,16);//设置字号
-			        Document docs=text2.getDocument();
-			        docs.insertString(docs.getLength(), File2, attrset);
-				}catch(Exception e1){
-					System.out.println("选择文件出错");
+					throw new ToolException(EnumCode.E1,e1);
 				}
 			}
 		}
@@ -269,54 +254,87 @@ class Windowm extends JFrame
 			public void actionPerformed(ActionEvent e4)//菜单项
 			{
 				try{
-					String dnas1;//算法处理之后的字符串1
-					String dnas2;//算法处理之后的字符串2
-					String jtp1;//JTextpane的内容1
-					String jtp2;//JTextpane的内容2
-					int len=0;	//处理后的字符串长度
-								
-					jtp1=text1.getText();//获取窗口文本
-					jtp2=text2.getText();
-					text1.setText("");//清空之前内容
+					//System.out.println(path1);
+					//JTextpane的内容2
+					String jtp2;
+					//清空text2的内容
 					text2.setText("");
-			        Document docs1=text1.getDocument();
-			        Document docs2=text2.getDocument();        					
-					DNASequence dna=new DNASequence(jtp1,jtp2);//通过构造方法传递参数
-					dna.runAnalysis();
-					dna.traceback();
-					dnas1=dna.getString1();//获取处理后的字符串
-					dnas2=dna.getString2();
-					char[] s = dnas1.toCharArray();//字符串转Char数组
-					char[] p = dnas2.toCharArray();
-					len=dnas1.length();
-					SimpleAttributeSet set2 = new SimpleAttributeSet();//设置一个属性
-					StyleConstants.setFontSize(set2,16);//设置字号
-					for(int i=0;i<len;i++){
-						if(s[i]=='-'){
-							StyleConstants.setForeground(set2,Color.BLUE);//设置文字颜色
-						    docs2.insertString(docs2.getLength(),String.valueOf(p[i]), set2);
-						}else if(p[i]=='-'){
-							StyleConstants.setForeground(set2,Color.BLUE);//设置文字颜色
-						    docs1.insertString(docs1.getLength(),String.valueOf(s[i]), set2);
-						}else if(s[i]==p[i]){
-							StyleConstants.setForeground(set2,Color.black);//设置文字颜色
-						    docs1.insertString(docs1.getLength(),String.valueOf(s[i]), set2);
-						    docs2.insertString(docs2.getLength(),String.valueOf(p[i]), set2);
-						}else if(s[i]!=p[i]){								StyleConstants.setForeground(set2,Color.red);//设置文字颜色
-							docs1.insertString(docs1.getLength(),String.valueOf(s[i]), set2);
-						    docs2.insertString(docs2.getLength(),String.valueOf(p[i]), set2);
-						}else{
-							System.out.print("考虑更多颜色");
+					//获取文档对象
+					Document docs2=text2.getDocument();      
+					//获取文件完整字符串信息
+					String fileInfo = Read_File.getFile();
+					int len=fileInfo.length();
+					//获取所有的属性
+					set = GetAttri.getAttri(cssContent);
+					//设置一个属性
+					SimpleAttributeSet set2 = new SimpleAttributeSet();
+					//设置字号
+					StyleConstants.setFontSize(set2,16);
+					
+					//设置文字颜色
+					StyleConstants.setForeground(set2,Color.black);
+					//先将文本插入文档对象
+					docs2.insertString(0,fileInfo,set2);
+					//具体处理需要染色的字符串
+					for(String str:set) {
+						//System.out.println(str);
+						//str:当前属性
+						//判断是否合规
+						Map<String,String> resMap = CSSCompatRuleObject.attributeCheck(str,version);
+						//合规信息
+						String keyValue=resMap.get(str);
+						//System.out.println("keyValue:"+keyValue);
+						String []res=keyValue.split("\\|");
+						int index;
+						if(res.length==2) {
+							//部分支持   
+							/**
+							 * 在fileInfo中定位到当前属性的所有位置,然后依次做处理
+							 */
+							List<Integer> indexes = new ArrayList<>();
+							Pattern p = Pattern.compile(str);
+					        Matcher m = p.matcher(fileInfo);
+					        while (m.find()) {
+					            index=m.start();
+					            indexes.add(index);
+					        }
+					        for(Integer cur:indexes) {
+					        	//System.out.println("cur"+cur);
+					        	docs2.remove(cur, str.length());
+					        	//设置颜色
+					        	StyleConstants.setForeground(set2,Color.BLUE);
+					        	docs2.insertString(cur, str, set2);
+					        }
+						}else {
+							if(res[0].equals("not supported")) {
+								//不支持
+								/**
+								 * 在fileInfo中定位到当前属性的所有位置,然后依次做处理
+								 */
+								List<Integer> indexes = new ArrayList<>();
+								Pattern p = Pattern.compile(str);
+						        Matcher m = p.matcher(fileInfo);
+						        while (m.find()) {
+						            index=m.start();
+						            indexes.add(index);
+						        }
+						        for(Integer cur:indexes) {
+						        	docs2.remove(cur, str.length());
+						        	//设置颜色
+						        	StyleConstants.setForeground(set2,Color.RED);
+						        	docs2.insertString(cur, str, set2);
+						        }
+							}
 						}
 					}
-					
-				}catch(Exception e1){		
-					System.out.println("选择文件2出错");
+				}catch(Exception e1){
+					throw new ToolException(EnumCode.E0,e1);
 				}
 			}
 		}
 	);  
 	setVisible(true);
     }
+
 }
 

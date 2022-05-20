@@ -35,11 +35,7 @@ public class Read_File {
 			}	
 		}
 		String data = new String(sb); //StringBuffer ==> String
-		System.out.println("数据为==> " + data);
 		return data;
 	}
 	
-//	public static void main(String[] args) {
-//		new Read_File("1");
-//	}
 }

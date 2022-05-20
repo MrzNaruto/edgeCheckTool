@@ -1,10 +1,12 @@
-package algorithm;
+package test;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import algorithm.DNASequence;
 
 public class Test {
 
@@ -15,8 +17,8 @@ public class Test {
 		DNASequence dna=new DNASequence(seq_1,seq_2);
 		dna.runAnalysis();
 		dna.traceback();
-		System.out.println(dna.getString1());
-		System.out.println(dna.getString2());
+		//System.out.println(dna.getString1());
+		//System.out.println(dna.getString2());
 /*		String str=".c{color:#77c}\n" + 
 //				".f14{font-size:14px}\n" + 
 				".f10{font-size:10.5pt}\n" + 
