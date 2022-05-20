@@ -14,7 +14,8 @@ public class GetAttri {
       // if(m_style.find()) {
        	//cssContent=m_style.group();
        //}
-	   String regEx_style1 = "[{;\\s][a-z]+:";
+	  // String regEx_style1 = "([{;\\s][a-z]+:)|(-[a-z]+-[a-z]+-[a-z]+:)";
+	   String regEx_style1 = "[{;\\s][a-z-]+:";
        Pattern p_style1 = Pattern.compile(regEx_style1, Pattern.CASE_INSENSITIVE);
        Matcher m_style1 = p_style1.matcher(str);
        HashSet<String> attriset = new HashSet<String>();
@@ -22,8 +23,8 @@ public class GetAttri {
     	 String group=m_style1.group();
     	 group=group.replaceAll("\\{", "");
     	 group=group.replaceAll(";", "");
-    	 group=group.replaceAll(" ", "");
     	 group=group.replaceAll(":", "");
+    	 group=group.trim();
     	 attriset.add(group);  	
        }
        return attriset;

@@ -9,15 +9,16 @@ import java.util.regex.Pattern;
 public class Test {
 
 	public static void main(String[] args) {
-//		 String seq_1 = "CATTAATTACACTCTCGCACTCACCAAACCCAGACAGGCCTCGACTCC";
-//		 String seq_2 = "ACTAAACAAGACTCGCCTGTCTAACTAGGGAGTTTATAATGAACCGTGGCGTAGACCA";
-//
-//		DNASequence dna=new DNASequence(seq_1,seq_2);
-//		dna.runAnalysis();
-//		dna.traceback();
-//		System.out.print(dna.getString1());
-		String str=".c{color:#77c}\n" + 
-				".f14{font-size:14px}\n" + 
+		 String seq_1 = "CATTAATTACACTCTCGCACTCACCAAACCCAGACAGGCCTCGACTCC";
+		 String seq_2 = "ACTAAACAAGACTCGCCTGTCTAACTAGGGAGTTTATAATGAACCGTGGCGTAGACCA";
+
+		DNASequence dna=new DNASequence(seq_1,seq_2);
+		dna.runAnalysis();
+		dna.traceback();
+		System.out.println(dna.getString1());
+		System.out.println(dna.getString2());
+/*		String str=".c{color:#77c}\n" + 
+//				".f14{font-size:14px}\n" + 
 				".f10{font-size:10.5pt}\n" + 
 				".f16{font-size:16px}\n" + 
 				".f13{font-size:13px}\n" + 
@@ -46,7 +47,7 @@ public class Test {
                 Set<String> s=GetAttri.getAttri(str);
                 for(String s1: s){
                     System.out.println(s1);
-                 }
+                 }*/
 		
 	}
 }

@@ -1,6 +1,7 @@
 package main;
 
 import algorithm.DNASequence;
+import algorithm.GetAttri;
 import open_file.Read_File;
 
 import java.awt.*;
@@ -11,6 +12,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -228,6 +230,10 @@ class Windowm extends JFrame
 			        if(m_style.find()) {
 			        	cssContent = m_style.group();
 			        }
+			        Set<String> s=GetAttri.getAttri(cssContent);
+	                for(String s1: s){
+	                    System.out.println(s1);
+	                 }
 			        String version=(String)comboBox1.getSelectedItem();
 			        System.out.println(version);
 				}catch(Exception e1){
