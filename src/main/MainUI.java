@@ -222,6 +222,7 @@ class Windowm extends JFrame
 				    jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );
 				    jfc.showDialog(new JLabel(), "选择");
 				    File file=jfc.getSelectedFile();
+				    if(file.isFile()) {
 				    path1=file.getAbsolutePath();//获取文件绝对地址	
 				    new Read_File(path1);
 				    File1= Read_File.getFile();
@@ -243,6 +244,29 @@ class Windowm extends JFrame
 			        //String version=(String)comboBox1.getSelectedItem();
 			        version=(String)comboBox1.getSelectedItem();
 			        System.out.println(version);
+				    }
+				    else if(file.isDirectory()) {
+				    	List<String> fileNameList = new ArrayList<>();
+				    	StringBuffer sb = new StringBuffer();
+				    	File[] files = file.listFiles();
+				    	if(null != files && 0<files.length){
+							for(int i = 0,size = files.length;i<size;i++){
+								String tp =  files[i].getName();
+								fileNameList.add(tp);
+							}
+						}
+				    	int count=1;
+                        for(String s:fileNameList) {
+                        sb.append(String.valueOf(count)+"  ");
+				    	sb.append(s);
+				    	sb.append("\r\n");
+				    	count+=1;
+                        }
+                        Document docs=text1.getDocument();
+                        SimpleAttributeSet attrset = new SimpleAttributeSet();
+    				    StyleConstants.setFontSize(attrset,16);//设置字号
+                        docs.insertString(docs.getLength(), sb.toString(), attrset);
+				    }
 				}catch(Exception e1){
 					throw new ToolException(EnumCode.E1,e1);
 				}
