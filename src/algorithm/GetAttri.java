@@ -45,7 +45,7 @@ public class GetAttri {
                    filesDirs(fileNameList,flies2);
                }
            }else{
-        	   if(file.getName().endsWith(".html") ||file.getName().endsWith(".js")||file.getName().endsWith(".css")||file.getName().endsWith(".vue"))
+        	   if(file.getName().endsWith(".html") ||file.getName().endsWith(".js")||file.getName().endsWith(".css")||file.getName().endsWith(".vue")||file.getName().endsWith(".jsp"))
         	   {
         		   fileNameList.add(file.toString());
         	   }
