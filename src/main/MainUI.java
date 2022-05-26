@@ -149,6 +149,7 @@ class Windowm extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				version=(String)comboBox1.getSelectedItem();
+				//重新检测 TODO
 				//System.out.println(version);
 			}
         	
@@ -290,10 +291,26 @@ class Windowm extends JFrame
 					//设置字号
 					StyleConstants.setFontSize(set2,16);
 					
+					//设置图例颜色
+					StyleConstants.setForeground(set2,Color.red);
+					String icon1="○  Not supported\r\n";
+					docs2.insertString(0,icon1,set2);
+					
+					StyleConstants.setForeground(set2,Color.blue);
+					String icon2="○  Partial support\r\n";
+					docs2.insertString(icon1.length(), icon2, set2);
+					
+					int preLen1=icon1.length()+icon2.length();
+					StyleConstants.setForeground(set2,Color.gray);
+					String icon3="○  Support unknown\r\n";
+					docs2.insertString(preLen1, icon3, set2);
+					
+					int preLen2=preLen1+icon3.length();
+					
 					//设置文字颜色
 					StyleConstants.setForeground(set2,Color.black);
 					//先将文本插入文档对象
-					docs2.insertString(0,fileInfo,set2);
+					docs2.insertString(preLen2,fileInfo,set2);
 					//具体处理需要染色的字符串
 					for(String str:set) {
 						//System.out.println(str);
@@ -319,10 +336,10 @@ class Windowm extends JFrame
 					        }
 					        for(Integer cur:indexes) {
 					        	//System.out.println("cur"+cur);
-					        	docs2.remove(cur, str.length());
+					        	docs2.remove(cur+preLen2, str.length());
 					        	//设置颜色
 					        	StyleConstants.setForeground(set2,Color.BLUE);
-					        	docs2.insertString(cur, str, set2);
+					        	docs2.insertString(cur+preLen2, str, set2);
 					        }
 						}else {
 							if(res[0].equals("not supported")) {
@@ -338,10 +355,10 @@ class Windowm extends JFrame
 						            indexes.add(index);
 						        }
 						        for(Integer cur:indexes) {
-						        	docs2.remove(cur, str.length());
+						        	docs2.remove(cur+preLen2, str.length());
 						        	//设置颜色
 						        	StyleConstants.setForeground(set2,Color.RED);
-						        	docs2.insertString(cur, str, set2);
+						        	docs2.insertString(cur+preLen2, str, set2);
 						        }
 							}
 						}
