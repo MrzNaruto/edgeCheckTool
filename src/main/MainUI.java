@@ -246,15 +246,9 @@ class Windowm extends JFrame
 			        System.out.println(version);
 				    }
 				    else if(file.isDirectory()) {
-				    	List<String> fileNameList = new ArrayList<>();
-				    	StringBuffer sb = new StringBuffer();
-				    	File[] files = file.listFiles();
-				    	if(null != files && 0<files.length){
-							for(int i = 0,size = files.length;i<size;i++){
-								String tp =  files[i].getName();
-								fileNameList.add(tp);
-							}
-						}
+				    	List<String> fileName = new ArrayList<String>();
+				    	List<String> fileNameList = GetAttri.filesDirs(fileName, file);
+				    	StringBuffer sb = new StringBuffer();				    	
 				    	int count=1;
                         for(String s:fileNameList) {
                         sb.append(String.valueOf(count)+"  ");
