@@ -259,6 +259,7 @@ class Windowm extends JFrame
                         Document docs=text1.getDocument();
                         SimpleAttributeSet attrset = new SimpleAttributeSet();
     				    StyleConstants.setFontSize(attrset,16);//设置字号
+    				    docs.insertString(docs.getLength(), "该文件夹下待检测文件有：\r\n", attrset);
                         docs.insertString(docs.getLength(), sb.toString(), attrset);
 				    }
 				}catch(Exception e1){
