@@ -5,6 +5,7 @@ import compatitability.CSSCompatRuleObject;
 import enums.EnumCode;
 import exception.ToolException;
 import open_file.Read_File;
+import util.Util;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -31,6 +32,9 @@ class Windowm extends JFrame
 	String path1;//第一个文件目录
 	String File1;//第一个文件
 	int point;//保存当前活动窗口
+	
+	
+	File file;//文件对象
 	
 	private static final long serialVersionUID = 1L;
 	JPanel myPanel1 = new JPanel();//面板1.1
@@ -64,8 +68,10 @@ class Windowm extends JFrame
     
     
     Set<String> set;//截取出来的css属性
-    String cssContent ="";//截取出来的css内容
+    Set<String> js_set;//截取出来的js属性
+    List<String> backContent ;//截取出来的内容
     String version="";//版本
+    List<String> fileNameList ;//文件夹 遍历出来的文件路径
     public Windowm()
     {
     	jm.add(copy);
@@ -222,7 +228,7 @@ class Windowm extends JFrame
 				    JFileChooser jfc=new JFileChooser();
 				    jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );
 				    jfc.showDialog(new JLabel(), "选择");
-				    File file=jfc.getSelectedFile();
+				    file=jfc.getSelectedFile();
 				    if(file.isFile()) {
 				    path1=file.getAbsolutePath();//获取文件绝对地址	
 				    new Read_File(path1);
@@ -230,25 +236,27 @@ class Windowm extends JFrame
 				    SimpleAttributeSet attrset = new SimpleAttributeSet();
 				    StyleConstants.setFontSize(attrset,16);//设置字号
 			        Document docs=text1.getDocument();
-			        String regEx_style = "<style[^>]*?>[\\s\\S]*?<\\/style>";
-			        Pattern p_style = Pattern.compile(regEx_style, Pattern.CASE_INSENSITIVE);
-			        Matcher m_style = p_style.matcher(File1);
+//			        String regEx_style = "<style[^>]*?>[\\s\\S]*?<\\/style>";
+//			        Pattern p_style = Pattern.compile(regEx_style, Pattern.CASE_INSENSITIVE);
+//			        Matcher m_style = p_style.matcher(File1);
 			        docs.insertString(docs.getLength(), File1, attrset);
-			        cssContent = "";
-			        if(m_style.find()) {
-			        	cssContent = m_style.group();
-			        }
-			        set=GetAttri.getAttri(cssContent);
+//			        cssContent = "";
+//			        if(m_style.find()) {
+//			        	cssContent = m_style.group();
+//			        }
+//			        set=GetAttri.getAttri(cssContent);
 //	                for(String s1: set){
 //	                    System.out.println(s1);
 //	                 }
-			        //String version=(String)comboBox1.getSelectedItem();
+//			        String version=(String)comboBox1.getSelectedItem();
 			        version=(String)comboBox1.getSelectedItem();
-			        System.out.println(version);
+			        //System.out.println(version);
 				    }
 				    else if(file.isDirectory()) {
+				    	version=(String)comboBox1.getSelectedItem();
 				    	List<String> fileName = new ArrayList<String>();
-				    	List<String> fileNameList = GetAttri.filesDirs(fileName, file);
+				    	fileNameList = GetAttri.filesDirs(fileName, file);
+				    	
 				    	StringBuffer sb = new StringBuffer();				    	
 				    	int count=1;
                         for(String s:fileNameList) {
@@ -274,23 +282,16 @@ class Windowm extends JFrame
 			public void actionPerformed(ActionEvent e4)//菜单项
 			{
 				try{
-					//System.out.println(path1);
 					//JTextpane的内容2
 					String jtp2;
 					//清空text2的内容
 					text2.setText("");
 					//获取文档对象
-					Document docs2=text2.getDocument();      
-					//获取文件完整字符串信息
-					String fileInfo = Read_File.getFile();
-					int len=fileInfo.length();
-					//获取所有的属性
-					set = GetAttri.getAttri(cssContent);
+					Document docs2=text2.getDocument();
 					//设置一个属性
 					SimpleAttributeSet set2 = new SimpleAttributeSet();
 					//设置字号
 					StyleConstants.setFontSize(set2,16);
-					
 					//设置图例颜色
 					StyleConstants.setForeground(set2,Color.red);
 					String icon1="○  Not supported\r\n";
@@ -304,46 +305,38 @@ class Windowm extends JFrame
 					StyleConstants.setForeground(set2,Color.gray);
 					String icon3="○  Support unknown\r\n";
 					docs2.insertString(preLen1, icon3, set2);
-					
 					int preLen2=preLen1+icon3.length();
 					
-					//设置文字颜色
-					StyleConstants.setForeground(set2,Color.black);
-					//先将文本插入文档对象
-					docs2.insertString(preLen2,fileInfo,set2);
-					//具体处理需要染色的字符串
-					for(String str:set) {
-						//System.out.println(str);
-						//str:当前属性
-						//判断是否合规
-						Map<String,String> resMap = CSSCompatRuleObject.attributeCheck(str,version);
-						//合规信息
-						String keyValue=resMap.get(str);
-						//System.out.println("keyValue:"+keyValue);
-						String []res=keyValue.split("\\|");
-						int index;
-						if(res.length==2) {
-							//部分支持   
-							/**
-							 * 在fileInfo中定位到当前属性的所有位置,然后依次做处理
-							 */
-							List<Integer> indexes = new ArrayList<>();
-							Pattern p = Pattern.compile(str);
-					        Matcher m = p.matcher(fileInfo);
-					        while (m.find()) {
-					            index=m.start();
-					            indexes.add(index);
-					        }
-					        for(Integer cur:indexes) {
-					        	//System.out.println("cur"+cur);
-					        	docs2.remove(cur+preLen2, str.length());
-					        	//设置颜色
-					        	StyleConstants.setForeground(set2,Color.BLUE);
-					        	docs2.insertString(cur+preLen2, str, set2);
-					        }
-						}else {
-							if(res[0].equals("not supported")) {
-								//不支持
+					//判断打开的文件是文件还是文件夹
+					System.out.println(file);
+					if(file.isFile()) {//上传的文件
+						String absolutePath = file.getAbsolutePath();
+						String fileInfo=Read_File.getFile2(absolutePath);
+						int pos=absolutePath.lastIndexOf(".");
+						String fileKind=Util.getFileKind(absolutePath);
+						int len=fileInfo.length();
+						backContent = Util.subAttribute(fileInfo,fileKind);
+						//System.out.println(cssContent);
+						//获取所有的属性
+						set = GetAttri.getAttri(backContent.get(0));
+						//重置文字颜色为黑色
+						StyleConstants.setForeground(set2,Color.black);
+						//先将文本插入文档对象
+						docs2.insertString(preLen2,fileInfo,set2);
+						//具体处理需要染色的字符串
+						for(String str:set) {
+							System.out.println(str);
+							//str:当前属性
+							//判断是否合规
+							System.out.println("version"+version);
+							Map<String,String> resMap = CSSCompatRuleObject.attributeCheck(str,version);
+							//合规信息
+							String keyValue=resMap.get(str);
+							//System.out.println("keyValue:"+keyValue);
+							String []res=keyValue.split("\\|");
+							int index;
+							if(res.length==2) {
+								//部分支持   
 								/**
 								 * 在fileInfo中定位到当前属性的所有位置,然后依次做处理
 								 */
@@ -355,12 +348,74 @@ class Windowm extends JFrame
 						            indexes.add(index);
 						        }
 						        for(Integer cur:indexes) {
+						        	//System.out.println("cur"+cur);
 						        	docs2.remove(cur+preLen2, str.length());
 						        	//设置颜色
-						        	StyleConstants.setForeground(set2,Color.RED);
+						        	StyleConstants.setForeground(set2,Color.BLUE);
 						        	docs2.insertString(cur+preLen2, str, set2);
 						        }
+							}else {
+								if(res[0].equals("not supported")) {
+									//不支持
+									/**
+									 * 在fileInfo中定位到当前属性的所有位置,然后依次做处理
+									 */
+									List<Integer> indexes = new ArrayList<>();
+									Pattern p = Pattern.compile(str);
+							        Matcher m = p.matcher(fileInfo);
+							        while (m.find()) {
+							            index=m.start();
+							            indexes.add(index);
+							        }
+							        for(Integer cur:indexes) {
+							        	docs2.remove(cur+preLen2, str.length());
+							        	//设置颜色
+							        	StyleConstants.setForeground(set2,Color.RED);
+							        	docs2.insertString(cur+preLen2, str, set2);
+							        }
+								}
 							}
+						}
+					}else if(file.isDirectory()) {//上传的文件夹
+						for(String fileName:fileNameList) {
+							String fileInfo=Read_File.getFile2(fileName);
+							//获取文件后缀
+							String fileKind=Util.getFileKind(fileName);
+							//截取待检测属性所在的代码片段
+							backContent = Util.subAttribute(fileInfo,fileKind);
+							//截取具体属性集合
+							set = GetAttri.getAttri(backContent.get(0));
+							//重置文字颜色为黑色
+							StyleConstants.setForeground(set2,Color.black);
+							docs2.insertString(docs2.getLength(),fileName+"\r\n",set2);
+							for(String str:set) {
+								System.out.println("version"+version);
+								//判断是否合规
+								Map<String,String> resMap = CSSCompatRuleObject.attributeCheck(str,version);
+								//合规信息
+								String keyValue=resMap.get(str);
+								System.out.println(keyValue);
+								String []res=keyValue.split("\\|");
+								if(res.length==2) {
+									//设置颜色
+									StyleConstants.setForeground(set2,Color.BLUE);
+									//部分支持
+									/**
+									 * 定位属性所在位置
+									 */
+									String temp=Util.consOutput(fileInfo, str);
+									docs2.insertString(docs2.getLength(),temp,set2);
+								}else {
+									if(res[0].equals("not supported")) {
+										//设置颜色
+										StyleConstants.setForeground(set2,Color.RED);
+										/**
+										 * 定位属性所在位置
+										 */
+									}
+								}
+							}
+							
 						}
 					}
 				}catch(Exception e1){
@@ -370,7 +425,6 @@ class Windowm extends JFrame
 		}
 	);  
 	setVisible(true);
-    }
-
+    } 
 }
 

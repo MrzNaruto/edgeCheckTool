@@ -17,6 +17,14 @@ public class Test {
 		DNASequence dna=new DNASequence(seq_1,seq_2);
 		dna.runAnalysis();
 		dna.traceback();
+		String s="aaaa\r\n";
+		System.out.println(s.charAt(4));
+		System.out.println("dddd");
+		System.out.println(s.charAt(5));
+		System.out.println("dddd");
+		if(s.charAt(5)=='\n') {
+			System.out.println("dsfdsfsd");
+		}
 		//System.out.println(dna.getString1());
 		//System.out.println(dna.getString2());
 /*		String str=".c{color:#77c}\n" + 
